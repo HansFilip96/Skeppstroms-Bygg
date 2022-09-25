@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import LoginPage from "./components/auth/loginPage";
@@ -28,8 +34,16 @@ import {
 import { useStateContext } from "./contexts/contextProvider";
 import "./App.css";
 
+const ProtectedRoute = ({ isLoggedIn, redirectPath = "/login", children }) => {
+  if (!isLoggedIn) {
+    return <Navigate to={redirectPath} replace />;
+  }
+
+  return <Outlet />;
+};
+
 const App = () => {
-  const { activeMenu } = useStateContext();
+  const { activeMenu, isLoggedIn } = useStateContext();
 
   return (
     <div>
@@ -67,26 +81,29 @@ const App = () => {
             <div>
               <Routes>
                 *// Dashboard
-                <Route path="/" element={<Ecommerce />} />
-                <Route path="/ecommerce" element={<Ecommerce />} />
-                *//pages
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/employees" element={<Employees />} />
-                <Route path="/customers" element={<Customers />} />
-                *// Apps
-                <Route path="/kanban" element={<Kanban />} />
-                <Route path="/editor" element={<Editor />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/color-picker" element={<ColorPicker />} />
-                *// Charts
-                <Route path="/line" element={<Line />} />
-                <Route path="/area" element={<Area />} />
-                <Route path="/bar" element={<Bar />} />
-                <Route path="/pie" element={<Pie />} />
-                <Route path="/financial" element={<Financial />} />
-                <Route path="/color-Mapping" element={<ColorMapping />} />
-                <Route path="/pyramid" element={<Pyramid />} />
-                <Route path="/stacked" element={<Stacked />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route element={<ProtectedRoute isLoggedIn={isLoggedIn} />}>
+                  <Route path="/" element={<LoginPage />} />
+                  <Route path="ecommerce" element={<Ecommerce />} />
+                  *//pages
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/employees" element={<Employees />} />
+                  <Route path="/customers" element={<Customers />} />
+                  *// Apps
+                  <Route path="/kanban" element={<Kanban />} />
+                  <Route path="/editor" element={<Editor />} />
+                  <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/color-picker" element={<ColorPicker />} />
+                  *// Charts
+                  <Route path="/line" element={<Line />} />
+                  <Route path="/area" element={<Area />} />
+                  <Route path="/bar" element={<Bar />} />
+                  <Route path="/pie" element={<Pie />} />
+                  <Route path="/financial" element={<Financial />} />
+                  <Route path="/color-Mapping" element={<ColorMapping />} />
+                  <Route path="/pyramid" element={<Pyramid />} />
+                  <Route path="/stacked" element={<Stacked />} />
+                </Route>
               </Routes>
             </div>
           </div>
